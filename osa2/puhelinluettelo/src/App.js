@@ -1,7 +1,10 @@
-import { useState } from 'react'
-const Person = ({person}) => {
+import { useState, useEffect } from 'react'
+import personService from "./services/persons"
+
+const Person = ({person, delPerson}) => {
+    const uid = person.id
     return <div>
-        {person.name} {person.number}
+        {person.name} {person.number} <button onClick={() => delPerson(uid)}>Poista</button>
     </div>
 }
 const Filter = (props) => {
@@ -39,13 +42,8 @@ const AddNewForm = (props) => {
 
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' },
-    { name: "Anomaly Krugenstein", number: "0420-666-808" }
-  ]) 
+
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState("")
   
@@ -54,20 +52,36 @@ const App = () => {
     ? persons
     : persons.filter(person => person.name.toUpperCase().includes(filter.toUpperCase()))
 
+  const delPerson = (uid) => {
+      if (window.confirm("Haluatko poistaa tämän yhteystiedon?")) {
 
+      personService.delPerson(uid)
+      .then(response => {
+          console.log(response)
+      })
+    }
+  }
   const addPerson = (event) => {
       event.preventDefault()
-      const sameName = persons.find(person => person.name === newName);
-      console.log(sameName)
+      const sameName = persons.find(person => person.name.toUpperCase() === newName.toUpperCase());
+      const newObject = {
+          name: newName,
+          number: newNumber
+      }
+
       if (sameName) {
           window.alert(newName + " löytyy jo!")
              }
       else {
-      setPersons(persons.concat({ name: newName, number: newNumber}))
-      }
-      console.log(persons)
+        personService.create(newObject)
+        .then(response => {
+            console.log(response)
+            setPersons(persons.concat(response.data))
+        })
+        
       setNewName("")
       setNewNumber("")
+    }
   }
 
   const handleNumberChange = (event) => {
@@ -81,6 +95,12 @@ const App = () => {
   const handleFilterChange = (event) => {
         setFilter(event.target.value)      
   }
+  useEffect(() => {
+    personService.getAll()
+      .then(response => {
+        setPersons(response.data)
+      })
+  }, [])
 
 
   return (
@@ -97,7 +117,7 @@ const App = () => {
       <h2>Numbers</h2>
       <ul>
           {personsToShow.map((person, index) => 
-          <Person key={index} person={person} />
+          <Person key={index} person={person} delPerson={delPerson} />
           )}
       </ul>
     </div>

@@ -8,7 +8,7 @@ const Statistics = (props) => {
 
 
     return (
-                <table cellspacing="0" cellpadding="0">
+                <table>
     <StatisticLine name="good" value={props.good}/> 
     <StatisticLine name="neutral" value={props.neutral}/>
     <StatisticLine name="bad" value={props.bad}/>
