@@ -78,6 +78,10 @@ const App = () => {
             console.log(response)
             setPersons(persons.concat(response.data))
         })
+        .catch(error => {
+            console.log(50*"#" + error.response)
+            alert(error.response.data)
+        })
         
       setNewName("")
       setNewNumber("")
