@@ -21,3 +21,4 @@ const PORT = 3003
 app.listen(PORT, () => {
   logger.info(`Server running on port ${PORT}`)
 })
+module.exports = app

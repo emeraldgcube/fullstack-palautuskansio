@@ -16,12 +16,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "NODE_ENV=production node index.js",
     "build": "react-scripts build",
-    "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "nodemon index.js"
-
+    "dev": "NODE_ENV=development nodemon index.js",
+    "teststubs": "jest --verbose",
+    "test": "NODE_ENV=test jest --verbose --runInBand --forceExit"
   },
   "eslintConfig": {
     "extends": [
@@ -40,5 +40,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "jest": "^27.5.1",
+    "supertest": "^6.2.2"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
